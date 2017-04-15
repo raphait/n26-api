@@ -18,17 +18,17 @@ import it.rapha.challenge.transactions.model.TransactionRespository;
 @RestController
 public class TransactionsRestController {
 	
-	private TransactionRespository transactionRespository;
+	private TransactionRespository transactions;
 
 	@Autowired
 	public TransactionsRestController(TransactionRespository transactionRespository) {
-		this.transactionRespository = transactionRespository;
+		this.transactions = transactionRespository;
 	}
 
 	@RequestMapping(value =  "/transactions", method = POST, consumes =  APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> create(@RequestBody Transaction transaction, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<Void> create(@RequestBody(required = true) Transaction transaction, UriComponentsBuilder uriBuilder) {
 		HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(uriBuilder.path("/user/{id}").buildAndExpand(transactionRespository.add(transaction)).toUri());
+        headers.setLocation(uriBuilder.path("/user/{id}").buildAndExpand(transactions.add(transaction)).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 }

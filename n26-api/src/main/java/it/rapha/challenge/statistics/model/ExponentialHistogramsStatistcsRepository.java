@@ -9,6 +9,12 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.function.BinaryOperator;
 import java.util.stream.IntStream;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ExponentialHistogramsStatistcsRepository implements StatistcsRepository {
 	
 	private static final long DEFAULT_WINDOW = SECONDS.toMillis(1l);
@@ -19,9 +25,10 @@ public class ExponentialHistogramsStatistcsRepository implements StatistcsReposi
 	
 	public ExponentialHistogramsStatistcsRepository() {
 		this(DEFAULT_WINDOW_SIZE, DEFAULT_WINDOW);
+		System.out.println("creating");
 	}
 
-	public ExponentialHistogramsStatistcsRepository(int windowSize, long window) {
+	ExponentialHistogramsStatistcsRepository(int windowSize, long window) {
 		this.windowSize = windowSize;
 		this.window = window;
 		ImmutableBucket emptyBuffer[] = new ImmutableBucket[windowSize];
