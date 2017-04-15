@@ -4,7 +4,7 @@ import java.util.DoubleSummaryStatistics;
 
 public interface StatistcsRepository {
 	
-	void add(long timestamp, double amount);
+	ImmutableBucket add(long timestamp, double amount);
 	
 	DoubleSummaryStatistics summaryStatistics();
 	

@@ -1,7 +1,6 @@
 package it.rapha.challenge.statistics.model;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -25,25 +24,18 @@ import lombok.ToString;
 final class ImmutableBucket {
 	
 	private static final String THE_BUCKETS_SHOULD_BE_IN_THE_SAME_SLIDED_WINDOW = "The buckets should be in the same slided window.";
-	private static final long DEFAULT_WINDOW = SECONDS.toMillis(1l);
+
+	private static final DoubleSummaryStatistics EMPTY_STATISTICS = new DoubleSummaryStatistics();
+	protected static final ImmutableBucket EMPTY = new ImmutableBucket(-1, EMPTY_STATISTICS);
 
 	@Getter(PACKAGE) private final long timestamp;
 	@Getter(PACKAGE) private final DoubleSummaryStatistics statistics;
 
 	protected static ImmutableBucket of(final long timestamp, final double amount) {
-		return of(timestamp, amount, DEFAULT_WINDOW);
-	}
-	
-	protected static ImmutableBucket of(final long timestamp, final double amount, long window) {
-		final long timestampSlided = slide(timestamp, window);
 		final DoubleSummaryStatistics statistics = new DoubleSummaryStatistics();
 		statistics.accept(amount);
 		
-		return new ImmutableBucket(timestampSlided, statistics);
-	}
-
-	private static long slide(final long timestamp, final long window) {
-		return timestamp/window;
+		return new ImmutableBucket(timestamp, statistics);
 	}
 
 	double getAverage() {
@@ -65,8 +57,6 @@ final class ImmutableBucket {
 	long getCount() {
 		return statistics.getCount();
 	}
-
-	
 	
 	/**
 	 * Combines two {@code Bucket}s into new one.
@@ -78,6 +68,11 @@ final class ImmutableBucket {
 	 */
 	ImmutableBucket combine(ImmutableBucket other) {
 		requireNonNull(other);
+		
+		if (isEmpty()) {
+			return other;
+		}
+		
 		requireEqual(other, THE_BUCKETS_SHOULD_BE_IN_THE_SAME_SLIDED_WINDOW);
 		
 		final DoubleSummaryStatistics combinedStatistics = new DoubleSummaryStatistics();
@@ -91,6 +86,10 @@ final class ImmutableBucket {
 		if (!this.equals(other)) {
 			throw new IllegalArgumentException(message);
 		}
+	}
+	
+	protected boolean isEmpty() {
+		return EMPTY.equals(this);
 	}
 
 }

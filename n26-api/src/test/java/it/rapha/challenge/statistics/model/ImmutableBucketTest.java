@@ -1,8 +1,8 @@
 package it.rapha.challenge.statistics.model;
 
 
-import static java.util.concurrent.TimeUnit.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.time.Instant;
 import java.util.DoubleSummaryStatistics;
@@ -15,8 +15,6 @@ import org.junit.Test;
 public class ImmutableBucketTest {
 	
 	private static final double epsilon = 0.001;
-	private static final long SECONDS_WINDOW = SECONDS.toMillis(1l);
-	private static final long MINUTES_WINDOW = MINUTES.toMillis(1l);
 	private static ImmutableBucket nowTenBucket, nowTweentyBucket, nowNegativeTenBucket, nowNegativeElevenBucket, differentBucket;
 	
 	@Before
@@ -32,10 +30,9 @@ public class ImmutableBucketTest {
 	@Test
 	public void shouldCreateNewValidBucket() {
 		double amount = 12.3;
-		long timestamp = 1478192204000l;
 		long expectedRounded = 1478192204l;
 		
-		ImmutableBucket bucket = ImmutableBucket.of(timestamp, amount);
+		ImmutableBucket bucket = ImmutableBucket.of(expectedRounded, amount);
 		
 		assertNotNull(bucket);
 		assertEquals(expectedRounded, bucket.getTimestamp());
@@ -44,25 +41,6 @@ public class ImmutableBucketTest {
 		assertEquals(amount, bucket.getMin(), 0.001);
 		assertEquals(amount, bucket.getSum(), 0.001);
 		assertEquals(bucket.getCount(), 1l);
-	}
-	
-	@Test
-	public void shouldTimestampBeSlidedBySecondsBucket() {
-		long timestamp = 1478192204321l;
-		long expectedRounded = timestamp/1000;
-		
-		ImmutableBucket bucket = ImmutableBucket.of(timestamp, 3.21, SECONDS_WINDOW);
-		
-		assertEquals(expectedRounded, bucket.getTimestamp());
-	}
-	
-	@Test
-	public void shouldTimestampBeSlidedByMinutesBucket() {
-		long timestamp = 1478192204321l;
-		long expectedRounded = timestamp/60000;
-		ImmutableBucket bucket = ImmutableBucket.of(timestamp, 3.21, MINUTES_WINDOW);
-		
-		assertEquals(expectedRounded, bucket.getTimestamp());
 	}
 	
 	@Test
@@ -138,6 +116,13 @@ public class ImmutableBucketTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldThrowIllegalArgumentExceptionTest() {
 		nowTenBucket.combine(differentBucket);
+	}
+	
+	@Test
+	public void shouldNotChanngeTheStateOfEmpty() {
+		ImmutableBucket empty = ImmutableBucket.EMPTY.combine(ImmutableBucket.EMPTY);
+		assertEquals(ImmutableBucket.EMPTY, empty);
+		assertEquals(0l, empty.getCount());
 	}
 	
 }
