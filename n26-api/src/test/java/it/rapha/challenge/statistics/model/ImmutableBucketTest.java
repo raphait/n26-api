@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BucketTest {
+public class ImmutableBucketTest {
 	
 	private static final double epslon = 0.001;
 	private static final long SECONDS_WINDOW = SECONDS.toMillis(1l);

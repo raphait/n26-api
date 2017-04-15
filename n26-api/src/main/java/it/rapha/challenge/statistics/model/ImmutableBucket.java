@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.rapha.challenge.statistics.model;
 
 import static java.util.Objects.requireNonNull;
