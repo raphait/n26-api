@@ -1,6 +1,7 @@
 package it.rapha.challenge.statistics.model;
 
 
+import static java.util.concurrent.TimeUnit.*;
 import static org.junit.Assert.*;
 
 import java.time.Instant;
@@ -8,16 +9,18 @@ import java.util.DoubleSummaryStatistics;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 public class BucketTest {
 	
 	private static final double epslon = 0.001;
+	private static final long SECONDS_WINDOW = SECONDS.toMillis(1l);
+	private static final long MINUTES_WINDOW = MINUTES.toMillis(1l);
 	private static ImmutableBucket nowTenBucket, nowTweentyBucket, nowNegativeTenBucket, nowNegativeElevenBucket, differentBucket;
 	
-	@BeforeClass
-    public static void setUp() {
+	@Before
+    public void setUp() {
 		Instant now = Instant.now();
         nowTenBucket = ImmutableBucket.of(now.toEpochMilli(), 10.0);
         nowTweentyBucket = ImmutableBucket.of(now.toEpochMilli(), 20.0);
@@ -27,23 +30,43 @@ public class BucketTest {
     }
 	
 	@Test
-	public void testNewBucket() {
-		double amount1 = 12.3;
-		long timestamp1 = 1478192204000l;
-		long expectedRounded1 = timestamp1/1000l;
+	public void shouldCreateNewValidBucket() {
+		double amount = 12.3;
+		long timestamp = 1478192204000l;
+		long expectedRounded = 1478192204l;
 		
-		ImmutableBucket bucket1 = ImmutableBucket.of(timestamp1, amount1);
+		ImmutableBucket bucket = ImmutableBucket.of(timestamp, amount);
 		
-		assertEquals(expectedRounded1, bucket1.getTimestamp());
-		assertEquals(amount1, bucket1.getAverage(), 0.001);
-		assertEquals(amount1, bucket1.getMax(), 0.001);
-		assertEquals(amount1, bucket1.getMin(), 0.001);
-		assertEquals(amount1, bucket1.getSum(), 0.001);
-		assertEquals(bucket1.getCount(), 1l);
+		assertNotNull(bucket);
+		assertEquals(expectedRounded, bucket.getTimestamp());
+		assertEquals(amount, bucket.getAverage(), 0.001);
+		assertEquals(amount, bucket.getMax(), 0.001);
+		assertEquals(amount, bucket.getMin(), 0.001);
+		assertEquals(amount, bucket.getSum(), 0.001);
+		assertEquals(bucket.getCount(), 1l);
 	}
 	
 	@Test
-	public void testCombineTwoBucketst() {
+	public void shouldTimestampBeSlidedBySecondsBucket() {
+		long timestamp = 1478192204321l;
+		long expectedRounded = timestamp/1000;
+		
+		ImmutableBucket bucket = ImmutableBucket.of(timestamp, 3.21, SECONDS_WINDOW);
+		
+		assertEquals(expectedRounded, bucket.getTimestamp());
+	}
+	
+	@Test
+	public void shouldTimestampBeSlidedByMinutesBucket() {
+		long timestamp = 1478192204321l;
+		long expectedRounded = timestamp/60000;
+		ImmutableBucket bucket = ImmutableBucket.of(timestamp, 3.21, MINUTES_WINDOW);
+		
+		assertEquals(expectedRounded, bucket.getTimestamp());
+	}
+	
+	@Test
+	public void shouldCombineTwoBucketst() {
 		
 		ImmutableBucket combinedBucket = nowTenBucket.combine(nowTweentyBucket);
 		double sum = nowTenBucket.getSum() + nowTweentyBucket.getSum();
@@ -58,7 +81,7 @@ public class BucketTest {
 	}
 	
 	@Test
-	public void testCombinePositiveAndNegativeBucketst() {
+	public void shouldCombinePositiveAndNegativeBucketst() {
 		
 		ImmutableBucket combinedBucket = nowTenBucket.combine(nowNegativeTenBucket);
 		double sum = nowTenBucket.getSum() + nowNegativeTenBucket.getSum();
@@ -73,7 +96,7 @@ public class BucketTest {
 	}
 	
 	@Test
-	public void testCombineTwoNegativeBucketst() {
+	public void shouldCombineTwoNegativeBucketst() {
 		
 		ImmutableBucket combinedBucket = nowNegativeTenBucket.combine(nowNegativeElevenBucket);
 		double sum = nowNegativeTenBucket.getSum() + nowNegativeElevenBucket.getSum();
@@ -88,7 +111,7 @@ public class BucketTest {
 	}
 	
 	@Test
-	public void testCombineAllBucketst() {
+	public void shouldCombinedlBucketstStatisticsBeTheSameAsDoubleSummaryStatistics() {
 		DoubleSummaryStatistics statistics = DoubleStream.of(10.0, 20.0, -10.0, -11.0).summaryStatistics();
 		
 		ImmutableBucket combinedBucket = Stream.of(nowTenBucket, nowTweentyBucket, nowNegativeTenBucket, nowNegativeElevenBucket)

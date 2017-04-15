@@ -28,17 +28,21 @@ import lombok.ToString;
 final class ImmutableBucket {
 	
 	private static final String THE_BUCKETS_SHOULD_BE_IN_THE_SAME_SLIDED_WINDOW = "The buckets should be in the same slided window.";
-	private static final long WINDOW = SECONDS.toMillis(1l);
+	private static final long DEFAULT_WINDOW = SECONDS.toMillis(1l);
 
 	@Getter(PACKAGE) private final long timestamp;
 	@Getter(PACKAGE) private final DoubleSummaryStatistics statistics;
 
 	protected static ImmutableBucket of(final long timestamp, final double amount) {
-		final long roundedSecond = slide(timestamp, WINDOW);
+		return of(timestamp, amount, DEFAULT_WINDOW);
+	}
+	
+	protected static ImmutableBucket of(final long timestamp, final double amount, long window) {
+		final long timestampSlided = slide(timestamp, window);
 		final DoubleSummaryStatistics statistics = new DoubleSummaryStatistics();
 		statistics.accept(amount);
 		
-		return new ImmutableBucket(roundedSecond, statistics);
+		return new ImmutableBucket(timestampSlided, statistics);
 	}
 
 	private static long slide(final long timestamp, final long window) {
