@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class ImmutableBucketTest {
 	
-	private static final double epslon = 0.001;
+	private static final double epsilon = 0.001;
 	private static final long SECONDS_WINDOW = SECONDS.toMillis(1l);
 	private static final long MINUTES_WINDOW = MINUTES.toMillis(1l);
 	private static ImmutableBucket nowTenBucket, nowTweentyBucket, nowNegativeTenBucket, nowNegativeElevenBucket, differentBucket;
@@ -73,10 +73,10 @@ public class ImmutableBucketTest {
 		
 		assertEquals(nowTenBucket.getTimestamp(), combinedBucket.getTimestamp());
 		assertEquals(nowTweentyBucket.getTimestamp(), combinedBucket.getTimestamp());
-		assertEquals(sum/2, combinedBucket.getAverage(), epslon);
-		assertEquals(nowTweentyBucket.getSum(), combinedBucket.getMax(), epslon);
-		assertEquals(nowTenBucket.getSum(), combinedBucket.getMin(), epslon);
-		assertEquals(sum, combinedBucket.getSum(), epslon);
+		assertEquals(sum/2, combinedBucket.getAverage(), epsilon);
+		assertEquals(nowTweentyBucket.getSum(), combinedBucket.getMax(), epsilon);
+		assertEquals(nowTenBucket.getSum(), combinedBucket.getMin(), epsilon);
+		assertEquals(sum, combinedBucket.getSum(), epsilon);
 		assertEquals(combinedBucket.getCount(), 2l);
 	}
 	
@@ -88,10 +88,10 @@ public class ImmutableBucketTest {
 		
 		assertEquals(nowTenBucket.getTimestamp(), combinedBucket.getTimestamp());
 		assertEquals(nowNegativeTenBucket.getTimestamp(), combinedBucket.getTimestamp());
-		assertEquals(0, combinedBucket.getAverage(), epslon);
-		assertEquals(nowTenBucket.getSum(), combinedBucket.getMax(), epslon);
-		assertEquals(nowNegativeTenBucket.getSum(), combinedBucket.getMin(), epslon);
-		assertEquals(sum, combinedBucket.getSum(), epslon);
+		assertEquals(0, combinedBucket.getAverage(), epsilon);
+		assertEquals(nowTenBucket.getSum(), combinedBucket.getMax(), epsilon);
+		assertEquals(nowNegativeTenBucket.getSum(), combinedBucket.getMin(), epsilon);
+		assertEquals(sum, combinedBucket.getSum(), epsilon);
 		assertEquals(combinedBucket.getCount(), 2l);
 	}
 	
@@ -103,10 +103,10 @@ public class ImmutableBucketTest {
 		
 		assertEquals(nowNegativeElevenBucket.getTimestamp(), combinedBucket.getTimestamp());
 		assertEquals(nowNegativeTenBucket.getTimestamp(), combinedBucket.getTimestamp());
-		assertEquals(sum/2, combinedBucket.getAverage(), epslon);
-		assertEquals(nowNegativeTenBucket.getSum(), combinedBucket.getMax(), epslon);
-		assertEquals(nowNegativeElevenBucket.getSum(), combinedBucket.getMin(), epslon);
-		assertEquals(sum, combinedBucket.getSum(), epslon);
+		assertEquals(sum/2, combinedBucket.getAverage(), epsilon);
+		assertEquals(nowNegativeTenBucket.getSum(), combinedBucket.getMax(), epsilon);
+		assertEquals(nowNegativeElevenBucket.getSum(), combinedBucket.getMin(), epsilon);
+		assertEquals(sum, combinedBucket.getSum(), epsilon);
 		assertEquals(combinedBucket.getCount(), 2l);
 	}
 	
@@ -121,10 +121,10 @@ public class ImmutableBucketTest {
 		assertEquals(4, combinedBucket.getCount());
 		
 		assertEquals(statistics.getCount(), combinedBucket.getCount());
-		assertEquals(statistics.getAverage(), combinedBucket.getAverage(), epslon);
-		assertEquals(statistics.getMax(), combinedBucket.getMax(), epslon);
-		assertEquals(statistics.getMin(), combinedBucket.getMin(), epslon);
-		assertEquals(statistics.getSum(), combinedBucket.getSum(), epslon);
+		assertEquals(statistics.getAverage(), combinedBucket.getAverage(), epsilon);
+		assertEquals(statistics.getMax(), combinedBucket.getMax(), epsilon);
+		assertEquals(statistics.getMin(), combinedBucket.getMin(), epsilon);
+		assertEquals(statistics.getSum(), combinedBucket.getSum(), epsilon);
 		
 		assertEquals(nowNegativeElevenBucket.getTimestamp(), combinedBucket.getTimestamp());
 		
