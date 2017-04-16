@@ -62,7 +62,7 @@ public class StatistcsRepositoryTest {
 		statistcs.add(addedTimestamp3, addedAmount3);
 		
 		double addedAmount4 = 100.0;
-		long addedTimestamp4 = System.currentTimeMillis();;
+		long addedTimestamp4 = System.currentTimeMillis();
 		statistcs.add(addedTimestamp4, addedAmount4);
 		
 		double skippedAmount5 = 1.0;
@@ -88,6 +88,8 @@ public class StatistcsRepositoryTest {
 		assertEquals(EMPTY, emptyActual);
 		assertEquals(.0, summaryStatistics.getSum(), epsilon);
 		assertEquals(0l, summaryStatistics.getCount());
+		
+		System.out.println(System.currentTimeMillis());
 		
 	}
 	

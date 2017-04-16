@@ -22,8 +22,9 @@ public class StatisticsMonitor {
 	
 	@AfterReturning("execution(* it.rapha.challenge..**TransactionRespository.*(..))")
 	public void logServiceAccess(JoinPoint joinPoint) {
+		System.out.println("StatisticsMonitor: " + joinPoint);
 		Transaction t = (Transaction) joinPoint.getArgs()[0];
-		statistcs.add(t.getTimestamp(), t.getAmount());
+		System.out.println("StatisticsMonitor: " + statistcs.add(t.getTimestamp(), t.getAmount()));
 	}
 
 }
