@@ -4,7 +4,6 @@ import java.time.Instant;
 
 import org.springframework.web.client.RestTemplate;
 
-import ch.qos.logback.core.util.Duration;
 import it.rapha.challenge.transactions.model.Transaction;
 
 public class TransactionRestControllerTest {
