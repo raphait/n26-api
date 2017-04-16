@@ -9,6 +9,6 @@ public class Transaction {
 
 	private final double amount;
 	
-	@Min(0)
+	@Min(value = 0, message = "timestamp must be greater than or equal to 0")
 	private final long timestamp;
 }

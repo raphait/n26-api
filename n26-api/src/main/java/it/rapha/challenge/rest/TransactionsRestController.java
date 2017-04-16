@@ -3,6 +3,8 @@ package it.rapha.challenge.rest;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,12 @@ public class TransactionsRestController {
 	}
 
 	@RequestMapping(value =  "/transactions", method = POST, consumes =  APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> create(@RequestBody(required = true) Transaction transaction, UriComponentsBuilder uriBuilder) {
-		HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(uriBuilder.path("/user/{id}").buildAndExpand(transactions.add(transaction)).toUri());
+	public ResponseEntity<Void> create(@RequestBody(required = true) @Valid Transaction transaction, UriComponentsBuilder uriBuilder) {
+		final HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(
+        		uriBuilder.path("/transactions/{timestamp}")
+        				  .buildAndExpand(transactions.add(transaction))
+        				  .toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 }
